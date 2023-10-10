@@ -1,0 +1,18 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:MusicApplication.ViewModel"
+                    xmlns:view="clr-namespace:MusicApplication.View">
+
+    <DataTemplate DataType="{x:Type vm:HomeVM}">
+        <view:Home />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:SettingsVM}">
+        <view:Settings />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:SearchVM}">
+        <view:Search />
+    </DataTemplate>
+
+</ResourceDictionary>
