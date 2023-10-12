@@ -20,50 +20,53 @@ namespace MusicApplication.ViewModel
 {
     internal partial class SearchVM : ViewModelBase
     {
-        private readonly string connectionString = "Host=localhost;Port=5432;Database=musicplayer_db;Username=postgres;Password=Dtkjcbgtl2016";
+        private readonly string connectionString = "Host=ep-polished-glade-22606167.eu-central-1.aws.neon.tech;Port=5432;Database=neondb;Username=tverdohlebovartem;Password=1aYkNAxZhLO8";
 
         private TbMusic _music;
-        private ObservableCollection<TbMusic> musics;
-
-        public ObservableCollection<TbMusic> Musics
-        {
-            get => musics;
-            set { SetProperty(ref musics, value); }
-        }
+        private ObservableCollection<TbMusic> _musicList;
 
         public TbMusic SelectedItem
         {
             get => _music;
             set 
-            { _music = value; 
+            {   _music = value;
                 OnPropertyChanged(); 
                 WeakReferenceMessenger.Default.Send(new MusicMessenger(SelectedItem));
             }
         }
 
+        public ObservableCollection<TbMusic> MusicList 
+        { 
+            get => _musicList; 
+            set => SetProperty(ref _musicList, value); 
+        }
+
         public SearchVM()
         {
             _music = new TbMusic();
+            MusicList = OnSelectMusic();
+        }
 
-            NpgsqlConnection connection = new(connectionString);
-            connection.Open();
+        private ObservableCollection<TbMusic> OnSelectMusic()
+        {
+            ObservableCollection<TbMusic> temp = new();
+            WeakReferenceMessenger.Default.Register<SelectionMessenger>(this, async (r, m) =>
+            {
+                temp.Clear();
+                NpgsqlConnection connection = new(connectionString);
+                await Task.Run(() => connection.Open());
 
-            string sql = "select music_name, music_path from tb_music;";
-            NpgsqlCommand command = new NpgsqlCommand(sql, connection);
-            List<string> temp = new();
-            using (NpgsqlDataReader reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    temp.Add(reader.GetString(0));
-                    temp.Add(reader.GetString(1));
-                }
-            }
-            Musics = new ObservableCollection<TbMusic>()
-            {
-                new TbMusic(){MusicName = temp[0], MusicPath = temp[1]},
-                new TbMusic(){MusicName = temp[2], MusicPath = temp[3]}
-            };
+                string sql = $"select music_name, music_path, music_author_id from tb_music where music_name like '%{m.Value}%';";
+                NpgsqlCommand command = new(sql, connection);
+                int counter = 0;
+                NpgsqlDataReader reader = command.ExecuteReader();
+                    while (await Task.Run( () => reader.Read()))
+                    {
+                        temp.Add(new TbMusic { MusicName = reader.GetString(0), MusicPath = reader.GetString(1), MusicAuthorId = reader.GetInt32(2) });
+                        counter++;
+                    }
+            });
+            return temp;
         }
     }
 }

@@ -25,7 +25,6 @@ namespace MusicApplication
     /// </summary>
     public partial class MainWindow : Window
     {
-        string connectionString = "Host=localhost;Username=postgres;Password=Dtkjcbgtl2016;Database=musicplayer_db";
         MediaPlayer player = new MediaPlayer();
         private string path;
 
@@ -34,7 +33,18 @@ namespace MusicApplication
             InitializeComponent();
             WeakReferenceMessenger.Default.Register<MusicMessenger>(this, (r, m) =>
             {
-                path = m.Value.MusicPath;
+                if (m.Value != null)
+                {
+                    if (path != m.Value.MusicPath)
+                    {
+                        player.Stop();
+                        Slider_time.Value = 0;
+                        path = m.Value.MusicPath;
+                        player.Open(new Uri(path));
+                        player.MediaOpened += MediaOpened;
+                    }
+                    
+                }
             });
             DispatcherTimer timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
@@ -49,13 +59,6 @@ namespace MusicApplication
                 songTimerNow.Text = String.Format("{0}", player.Position.ToString(@"mm\:ss"));
                 Slider_time.Value += 1;
             }
-            /*if (player.Source != null && path != temp)
-            {
-                player.Stop();
-                Slider_time.Value = 0;
-                player.Open(new Uri(path));
-                player.Play();
-            }*/
         }
 
         private void CloseApp_Click(object sender, RoutedEventArgs e)
@@ -99,7 +102,7 @@ namespace MusicApplication
         {
             player.Stop();
             Slider_time.Value = 0;
-           // player.Open(new Uri(vM.Musics[1].MusicPath));
+            //player.Open(new Uri());
             player.MediaOpened += MediaOpened;
         }
 
@@ -107,8 +110,25 @@ namespace MusicApplication
         {
             player.Stop();
             Slider_time.Value = 0;
-            //player.Open(new Uri(vM.Musics[0].MusicPath));
+            //player.Open(new Uri());
             player.MediaOpened += MediaOpened;
+        }
+
+        private void HideApp_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void StretchApp_Click(object sender, RoutedEventArgs e)
+        {
+            if (WindowState == WindowState.Normal)
+            {
+                WindowState = WindowState.Maximized;
+            }
+            else
+            {
+                WindowState = WindowState.Normal;
+            }
         }
     }
 }

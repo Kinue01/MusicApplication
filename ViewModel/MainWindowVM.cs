@@ -20,7 +20,7 @@ namespace MusicApplication.ViewModel
 {
     internal class MainWindowVM : ViewModelBase
     {
-        private readonly string connectionString = "Host=localhost;Username=postgres;Password=Dtkjcbgtl2016;Database=musicplayer_db";
+        private readonly string connectionString = "Host=ep-polished-glade-22606167.eu-central-1.aws.neon.tech;Port=5432;Database=neondb;Username=tverdohlebovartem;Password=1aYkNAxZhLO8";
 
         private readonly TbMusic _music;
         private string _musicAuth;
@@ -69,28 +69,16 @@ namespace MusicApplication.ViewModel
             NpgsqlConnection connection = new(connectionString);
             connection.Open();
 
-            string sql1 = "select * from tb_music where music_id = 1;";
-            NpgsqlCommand command1 = new(sql1, connection);
-
-            using (NpgsqlDataReader reader = command1.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    Music_Id = reader.GetInt32(0);
-                    Music_Name = reader.GetString(1);
-                    Music_Path = reader.GetString(2);
-                    Music_AuthorId = reader.GetInt32(3);
-                }
-            }
-
-            string sql2 = $"select auth_name from tb_author where auth_id = {Music_AuthorId};";
-            NpgsqlCommand command2 = new NpgsqlCommand(sql2, connection);
-            Music_Author = command2.ExecuteScalar().ToString();
-
             WeakReferenceMessenger.Default.Register<MusicMessenger>(this, (r, m) =>
             {
-                Music_Name = m.Value.MusicName;
-                Music_Path = m.Value.MusicPath;
+                if (m.Value != null)
+                {
+                    Music_Name = m.Value.MusicName;
+                    Music_Path = m.Value.MusicPath;
+                    string sql2 = $"select auth_name from tb_author where auth_id = {m.Value.MusicAuthorId};";
+                    NpgsqlCommand command2 = new NpgsqlCommand(sql2, connection);
+                    Music_Author = command2.ExecuteScalar().ToString();
+                }
             });
         }
 

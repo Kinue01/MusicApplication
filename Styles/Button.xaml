@@ -152,6 +152,96 @@
 
     </Style>
 
+    <Style x:Key="HideApp"
+       TargetType="{x:Type Button}">
+
+        <Setter Property="Height"
+            Value="40" />
+        <Setter Property="Width"
+            Value="40" />
+        <Setter Property="HorizontalAlignment"
+            Value="Right" />
+        <Setter Property="VerticalAlignment"
+            Value="Top" />
+        <Setter Property="Margin"
+            Value="0,15,150,0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="LightGray" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+
+            <Setter.Value>
+
+                <ControlTemplate TargetType="Button">
+
+                    <Border Background="{TemplateBinding Background}" CornerRadius="25">
+
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                    </Border>
+
+                </ControlTemplate>
+
+            </Setter.Value>
+
+        </Setter>
+        <Style.Triggers>
+
+            <Trigger Property="IsMouseOver" Value="True">
+
+                <Setter Property="Background" Value="DarkGreen" />
+                <Setter Property="Foreground" Value="White" />
+
+            </Trigger>
+
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="StretchApp"
+       TargetType="{x:Type Button}">
+
+        <Setter Property="Height"
+            Value="40" />
+        <Setter Property="Width"
+            Value="40" />
+        <Setter Property="HorizontalAlignment"
+            Value="Right" />
+        <Setter Property="VerticalAlignment"
+            Value="Top" />
+        <Setter Property="Margin"
+            Value="0,15,75,0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="LightGray" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Template">
+
+            <Setter.Value>
+
+                <ControlTemplate TargetType="Button">
+
+                    <Border Background="{TemplateBinding Background}" CornerRadius="25">
+
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                    </Border>
+
+                </ControlTemplate>
+
+            </Setter.Value>
+
+        </Setter>
+        <Style.Triggers>
+
+            <Trigger Property="IsMouseOver" Value="True">
+
+                <Setter Property="Background" Value="DarkGreen" />
+                <Setter Property="Foreground" Value="White" />
+
+            </Trigger>
+
+        </Style.Triggers>
+    </Style>
+
     <ImageBrush x:Key="close_app_def"
                 ImageSource="C:\Users\tverd\source\repos\MusicApplication\Images\shutdown_def.png"
                 Stretch="None" />
