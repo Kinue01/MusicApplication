@@ -20,7 +20,7 @@ namespace MusicApplication.ViewModel
 {
     internal class MainWindowVM : ViewModelBase
     {
-        private readonly string connectionString = "Host=ep-polished-glade-22606167.eu-central-1.aws.neon.tech;Port=5432;Database=neondb;Username=tverdohlebovartem;Password=1aYkNAxZhLO8";
+        NeondbContext context = new();
 
         private readonly TbMusic _music;
         private string _musicAuth;
@@ -61,13 +61,11 @@ namespace MusicApplication.ViewModel
         public ICommand NavigateHomeCommand { get; }
         public ICommand NavigateSearchCommand { get; set; }
         public ICommand NavigateSettingsCommand { get; set; }
+        public ICommand NavigateSpotifyCommand { get; set; }
 
         public MainWindowVM()
         {
             _music = new TbMusic();
-
-            NpgsqlConnection connection = new(connectionString);
-            connection.Open();
 
             WeakReferenceMessenger.Default.Register<MusicMessenger>(this, (r, m) =>
             {
@@ -75,9 +73,7 @@ namespace MusicApplication.ViewModel
                 {
                     Music_Name = m.Value.MusicName;
                     Music_Path = m.Value.MusicPath;
-                    string sql2 = $"select auth_name from tb_author where auth_id = {m.Value.MusicAuthorId};";
-                    NpgsqlCommand command2 = new NpgsqlCommand(sql2, connection);
-                    Music_Author = command2.ExecuteScalar().ToString();
+                    Music_Author = context.TbAuthors.Find(m.Value.MusicAuthorId).AuthName;
                 }
             });
         }
@@ -89,6 +85,7 @@ namespace MusicApplication.ViewModel
             NavigateHomeCommand = new RelayCommand(Navigation.NavigateTo<HomeVM>) ;
             NavigateSettingsCommand = new RelayCommand(Navigation.NavigateTo<SettingsVM>);
             NavigateSearchCommand = new RelayCommand(Navigation.NavigateTo<SearchVM>) ;
+            NavigateSpotifyCommand = new RelayCommand(Navigation.NavigateTo<SpotifyVM>);
         }
     }
 }

@@ -15,4 +15,8 @@
         <view:Search />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type vm:SpotifyVM}">
+        <view:Spotify />
+    </DataTemplate>
+
 </ResourceDictionary>

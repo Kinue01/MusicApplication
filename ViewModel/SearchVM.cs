@@ -15,12 +15,16 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using MusicApplication.Messengers;
 using System.Windows.Controls;
+using Microsoft.EntityFrameworkCore;
+using MusicApplication.Model;
+using System.Net;
 
 namespace MusicApplication.ViewModel
 {
     internal partial class SearchVM : ViewModelBase
     {
-        private readonly string connectionString = "Host=ep-polished-glade-22606167.eu-central-1.aws.neon.tech;Port=5432;Database=neondb;Username=tverdohlebovartem;Password=1aYkNAxZhLO8";
+        WebClient webClient = new();
+        NeondbContext DbContext = new();
 
         private TbMusic _music;
         private ObservableCollection<TbMusic> _musicList;
@@ -49,22 +53,17 @@ namespace MusicApplication.ViewModel
 
         private ObservableCollection<TbMusic> OnSelectMusic()
         {
-            ObservableCollection<TbMusic> temp = new();
+            ObservableCollection<TbMusic> temp = new ObservableCollection<TbMusic>();
             WeakReferenceMessenger.Default.Register<SelectionMessenger>(this, async (r, m) =>
             {
                 temp.Clear();
-                NpgsqlConnection connection = new(connectionString);
-                await Task.Run(() => connection.Open());
-
-                string sql = $"select music_name, music_path, music_author_id from tb_music where music_name like '%{m.Value}%';";
-                NpgsqlCommand command = new(sql, connection);
-                int counter = 0;
-                NpgsqlDataReader reader = command.ExecuteReader();
-                    while (await Task.Run( () => reader.Read()))
+                await DbContext.TbMusics.ForEachAsync((j) =>
+                {
+                    if (j.MusicName.Contains(m.Value))
                     {
-                        temp.Add(new TbMusic { MusicName = reader.GetString(0), MusicPath = reader.GetString(1), MusicAuthorId = reader.GetInt32(2) });
-                        counter++;
+                        temp.Add(j);
                     }
+                });
             });
             return temp;
         }

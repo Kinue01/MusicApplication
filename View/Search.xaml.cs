@@ -29,6 +29,7 @@ namespace MusicApplication.View
         public Search()
         {
             InitializeComponent();
+            WeakReferenceMessenger.Default.Send(new SelectionMessenger(searchString.Text));
         }
 
         private void searchString_KeyDown(object sender, KeyEventArgs e)
