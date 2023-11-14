@@ -60,13 +60,6 @@
 
                     </Menu:Btn>
 
-                    <Menu:Btn Style="{StaticResource BtnStyle}" 
-                              Command="{Binding NavigateSpotifyCommand}" Visibility="Hidden">
-
-                        <TextBlock Style="{StaticResource Text_Style}" Text="Spotify" />
-
-                    </Menu:Btn>
-
                 </StackPanel>
 
             </Grid>
@@ -133,7 +126,7 @@
 
         </Grid>
 
-        <Button x:Name="Account" Style="{StaticResource Account}" Click="HideApp_Click">
+        <Button x:Name="Account" Style="{StaticResource Account}" Command="{Binding NavigateLoginCommand}">
 
             <Icon:PackIconMaterial Style="{StaticResource playerButtonIcon}" Kind="Account" />
 

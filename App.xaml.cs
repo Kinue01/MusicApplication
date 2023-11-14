@@ -31,9 +31,10 @@ namespace MusicApplication
             serviceCollection.AddSingleton<HomeVM>();
             serviceCollection.AddSingleton<SearchVM>();
             serviceCollection.AddSingleton<SettingsVM>();
-            serviceCollection.AddSingleton<SpotifyVM>();
             serviceCollection.AddSingleton<LoginVM>();
+            serviceCollection.AddSingleton<RegistrationVM>();
             serviceCollection.AddSingleton<INavigationService, NavigationService>();
+            serviceCollection.AddSingleton<IMusicPlayerService, MusicPlayService>();
 
             serviceCollection.AddSingleton<Func<Type, ViewModelBase>>(serviceProvider => viewModelType => (ViewModelBase)serviceProvider.GetRequiredService(viewModelType));
 

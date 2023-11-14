@@ -14,10 +14,26 @@
 
         <StackPanel Width="500" Height="800">
 
-            <TextBox x:Name="user_name" Width="100" />
-            <TextBox x:Name="user_password" Width="100" Margin="10" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 0 0 50">
+                <TextBlock Text="Логин" Margin="0 0 30 0"/>
+                <TextBox Text="{Binding Name, Mode=TwoWay}" x:Name="user_name" Width="100" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock Text="Пароль" Margin="0 0 30 0"/>
+                <TextBox Text="{Binding Password, Mode=TwoWay}" x:Name="user_password" Width="100" />
+            </StackPanel>
+            
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+            <Button Width="100" Height="20" Content="Войти" Margin="0 0 30 0" Command="{Binding LoginCommand}"/>
+
+            <Button Width="150" Height="20" Content="Зарегестрироваться" Command="{Binding RegistrationCommand}"/>
 
         </StackPanel>
         
+
     </Grid>
 </UserControl>

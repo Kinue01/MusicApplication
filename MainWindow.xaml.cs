@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,9 +31,6 @@ namespace MusicApplication
     public partial class MainWindow : Window
     {
         MediaPlayer player = new();
-        private string path;
-        private string temp;
-        WebClient client = new();
         DispatcherTimer timer = new();
 
         public MainWindow()
@@ -39,40 +38,16 @@ namespace MusicApplication
             InitializeComponent();
             WeakReferenceMessenger.Default.Register<MusicMessenger>(this, (r, m) =>
             {
-                temp = $@"..\..\..\Temp\temp.mp3";
                 if (m.Value != null)
                 {
-                    if (path != m.Value.MusicPath)
+                    player.Stop();
+                    player.Close();
+                    Slider_time.Value = 0;
+                    player.Open(new Uri(m.Value.MusicPath));
+                    if (player.Source != null)
                     {
-                        player.Stop();
-                        Slider_time.Value = 0;
-                        path = m.Value.MusicPath;
-                        client.DownloadFile(path, temp);
-                        player.Open(new Uri("C:\\Users\\tverd\\source\\repos\\MusicApplication\\Temp\\temp.mp3"));
-                        if (player.Source != null)
-                        {
-                            player.MediaOpened += MediaOpened;
-                        }
-                    }
-                    
-                }
-            });
-            WeakReferenceMessenger.Default.Register<UriMessenger>(this, (r, m) =>
-            {
-                if (m.Value != null)
-                {
-                    if (path != m.Value.Uri)
-                    {
-                        player.Stop();
-                        Slider_time.Value = 0;
-                        path = m.Value.Uri;
-                        player.Open(new Uri(path));
                         player.MediaOpened += MediaOpened;
                     }
-                }
-                else
-                {
-                    MessageBox.Show("=null");
                 }
             });
             timer.Interval = TimeSpan.FromSeconds(1);
@@ -103,9 +78,17 @@ namespace MusicApplication
 
         private void playButton_Click(object sender, RoutedEventArgs e)
         {
-            Slider_time.Value = 0;
-            player.Open(new Uri(path));
-            player.MediaOpened += MediaOpened;
+            if (!player.IsMuted)
+            {
+                timer.Stop();
+                player.Pause();
+            }
+
+            if (player.IsMuted)
+            {
+                timer.Start();
+                player.Play();
+            }
         }
 
         private void Slider_time_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -118,7 +101,7 @@ namespace MusicApplication
             }
         }
 
-        private void MediaOpened(object sender,EventArgs e)
+        private void MediaOpened(object sender, EventArgs e)
         {
             timer.Start();
             Slider_time.Maximum = player.NaturalDuration.TimeSpan.TotalSeconds;

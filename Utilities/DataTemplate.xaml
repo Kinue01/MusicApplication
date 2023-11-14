@@ -15,8 +15,12 @@
         <view:Search />
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type vm:SpotifyVM}">
-        <view:Spotify />
+    <DataTemplate DataType="{x:Type vm:LoginVM}">
+        <view:Login />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:RegistrationVM}">
+        <view:Registration />
     </DataTemplate>
 
 </ResourceDictionary>

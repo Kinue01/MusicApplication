@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MusicApplication;
+namespace MusicApplication.Model;
 
 public partial class TbAlbum
 {
@@ -9,5 +9,7 @@ public partial class TbAlbum
 
     public string AlbumName { get; set; } = null!;
 
-    public virtual ICollection<TbAuthor> TbAuthors { get; set; } = new List<TbAuthor>();
+    public int? AlbAuthorId { get; set; }
+
+    public virtual TbAuthor? AlbAuthor { get; set; }
 }

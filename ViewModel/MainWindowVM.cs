@@ -15,6 +15,8 @@ using System.Net.Http.Headers;
 using System.Windows.Controls;
 using CommunityToolkit.Mvvm.Messaging;
 using MusicApplication.Messengers;
+using MusicApplication.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace MusicApplication.ViewModel
 {
@@ -59,21 +61,22 @@ namespace MusicApplication.ViewModel
         }
 
         public ICommand NavigateHomeCommand { get; }
-        public ICommand NavigateSearchCommand { get; set; }
-        public ICommand NavigateSettingsCommand { get; set; }
-        public ICommand NavigateSpotifyCommand { get; set; }
-
+        public ICommand NavigateSearchCommand { get; }
+        public ICommand NavigateSettingsCommand { get; }
+        public ICommand NavigateLoginCommand { get; }
+        
         public MainWindowVM()
         {
             _music = new TbMusic();
 
-            WeakReferenceMessenger.Default.Register<MusicMessenger>(this, (r, m) =>
+            WeakReferenceMessenger.Default.Register<MusicMessenger>(this, async (r, m) =>
             {
                 if (m.Value != null)
                 {
                     Music_Name = m.Value.MusicName;
                     Music_Path = m.Value.MusicPath;
-                    Music_Author = context.TbAuthors.Find(m.Value.MusicAuthorId).AuthName;
+                    TbAuthor temp = await context.TbAuthors.FindAsync(m.Value.MusicAuthorId);
+                    Music_Author = temp.AuthName;
                 }
             });
         }
@@ -84,8 +87,8 @@ namespace MusicApplication.ViewModel
 
             NavigateHomeCommand = new RelayCommand(Navigation.NavigateTo<HomeVM>) ;
             NavigateSettingsCommand = new RelayCommand(Navigation.NavigateTo<SettingsVM>);
-            NavigateSearchCommand = new RelayCommand(Navigation.NavigateTo<SearchVM>) ;
-            NavigateSpotifyCommand = new RelayCommand(Navigation.NavigateTo<SpotifyVM>);
+            NavigateSearchCommand = new RelayCommand(Navigation.NavigateTo<SearchVM>);
+            NavigateLoginCommand = new RelayCommand(Navigation.NavigateTo<LoginVM>);
         }
     }
 }

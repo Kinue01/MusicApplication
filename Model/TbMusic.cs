@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MusicApplication;
+namespace MusicApplication.Model;
 
 public partial class TbMusic
 {

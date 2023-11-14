@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace MusicApplication;
+namespace MusicApplication.Model;
 
 public partial class NeondbContext : DbContext
 {
@@ -14,6 +14,8 @@ public partial class NeondbContext : DbContext
         : base(options)
     {
     }
+
+    public virtual DbSet<TbAlbum> TbAlbums { get; set; }
 
     public virtual DbSet<TbAuthor> TbAuthors { get; set; }
 
@@ -29,6 +31,23 @@ public partial class NeondbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<TbAlbum>(entity =>
+        {
+            entity.HasKey(e => e.AlbumId).HasName("tb_albums_pkey");
+
+            entity.ToTable("tb_albums");
+
+            entity.Property(e => e.AlbumId).HasColumnName("album_id");
+            entity.Property(e => e.AlbAuthorId).HasColumnName("alb_author_id");
+            entity.Property(e => e.AlbumName)
+                .HasMaxLength(50)
+                .HasColumnName("album_name");
+
+            entity.HasOne(d => d.AlbAuthor).WithMany(p => p.TbAlbums)
+                .HasForeignKey(d => d.AlbAuthorId)
+                .HasConstraintName("tb_albums_alb_author_id_fkey");
+        });
+
         modelBuilder.Entity<TbAuthor>(entity =>
         {
             entity.HasKey(e => e.AuthId).HasName("tb_author_pkey");
@@ -97,6 +116,9 @@ public partial class NeondbContext : DbContext
             entity.Property(e => e.UserName)
                 .HasMaxLength(50)
                 .HasColumnName("user_name");
+            entity.Property(e => e.UserPassword)
+                .HasMaxLength(20)
+                .HasColumnName("user_password");
         });
 
         OnModelCreatingPartial(modelBuilder);

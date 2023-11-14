@@ -23,7 +23,6 @@ namespace MusicApplication.ViewModel
 {
     internal partial class SearchVM : ViewModelBase
     {
-        WebClient webClient = new();
         NeondbContext DbContext = new();
 
         private TbMusic _music;
@@ -47,13 +46,12 @@ namespace MusicApplication.ViewModel
 
         public SearchVM()
         {
-            _music = new TbMusic();
             MusicList = OnSelectMusic();
         }
 
         private ObservableCollection<TbMusic> OnSelectMusic()
         {
-            ObservableCollection<TbMusic> temp = new ObservableCollection<TbMusic>();
+            ObservableCollection<TbMusic> temp = new();
             WeakReferenceMessenger.Default.Register<SelectionMessenger>(this, async (r, m) =>
             {
                 temp.Clear();
